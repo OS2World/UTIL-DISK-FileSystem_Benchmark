@@ -1,0 +1,60 @@
+; TEST - run benchmark
+; first parametr is blocksize
+; use blocksize n*512 for best results
+
+; HPFS allways divides read/write operation into 64K blocks
+; using blocksize > 64K have no speed efect
+
+; second parameter is how many times, read/write block
+; use bigger number to get smaller value error
+
+; next is type of operation
+;   R - read block
+;   W - write block
+;   E - read block and rewrite the same block
+
+; next is direction
+;   F - forward
+;   B - backward
+;   R - random (allways the same 'random' numbers)
+
+; and last is cache flag
+; F - Full cache
+; N - no cache
+; W - write through cache
+
+
+; CREATE  size - creates testfile for benchmark
+; DELETE deletes testfile
+; NAME filename - Use file filename for benchmark (good for CD-ROM tests)
+; SIZE size of testile, use this only with NAME
+
+SAY Read from cache (very depends on CPU and IFS driver)
+SIZE 128K
+CREATE
+TEST 2K  40K   R   F  F
+TEST 2K  50K   W   F  F
+TEST 2K  40K   W   F  N
+TEST 2K  20K E F N
+TEST 2K  20K E F F
+DELETE
+
+Say Read from DISK
+SIZE 4M
+CREATE
+TEST 2K 15K R F F
+TEST 2K 15K R F N
+TEST 2K 15K W F F
+TEST 2K 15K W F N
+DELETE
+
+SAY Network test (Optimized for tests on network drive)
+SIZE 64K
+CREATE
+TEST 512 16K W F F
+TEST 2K 6K W F F
+TEST 4K 2K W F F
+TEST 8K 333 W F F
+TEST 16K 333 W F F
+DELETE
+
